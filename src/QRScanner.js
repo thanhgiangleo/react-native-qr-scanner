@@ -1,28 +1,16 @@
 import React, {PureComponent} from 'react';
-import { RNCamera } from 'react-native-camera';
+import {RNCamera} from 'react-native-camera';
 import PropTypes from 'prop-types';
 
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  Vibration,
-  Platform,
-  PixelRatio,
-  StatusBar
-} from 'react-native';
+import {PixelRatio, Platform, StyleSheet, Vibration, View} from 'react-native';
 
 import QRScannerView from './QRScannerView'
+
 const pixelRatio = PixelRatio.get()
 
-/**
- * 扫描界面
- */
 export default class QRScanner extends PureComponent {
   constructor(props) {
     super(props);
-    //通过这句代码屏蔽 YellowBox
     console.disableYellowBox = true;
     this.state = {
       scanning: false,
@@ -30,75 +18,78 @@ export default class QRScanner extends PureComponent {
     }
   }
 
-  static defaultProps =  {
-    onRead: ()=>{},
-    renderTopView: () =>{},
-    renderBottomView: ()=><View style={{flex:1,backgroundColor:'#0000004D'}}/>,
+  static defaultProps = {
+    onRead: () => {
+    },
+    renderTopView: () => {
+    },
+    renderBottomView: () => <View style={{flex: 1, backgroundColor: '#0000004D'}}/>,
     rectHeight: 200,
     rectWidth: 200,
-    flashMode: false,   // 手电筒模式
-    finderX: 0,         // 取景器X轴偏移量
-    finderY: 0,         // 取景器Y轴偏移量
-    zoom: 0.2,          // 缩放范围 0 - 1
+    flashMode: false,
+    finderX: 0,
+    finderY: 0,
+    zoom: 0.2,
     translucent: false,
     isRepeatScan: false
   }
-  
+
   render() {
     return (
-      <View style={{
-        flex: 1
-      }}>
-        <RNCamera
-         style={{
+        <View style={{
           flex: 1
-        }}
-          onBarCodeRead={this._handleBarCodeRead}
-          barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-          flashMode={!this.props.flashMode ? RNCamera.Constants.FlashMode.off : RNCamera.Constants.FlashMode.torch} 
-          zoom={this.props.zoom}>
-          <View style={[styles.topButtonsContainer, this.props.topViewStyle]}>
-            {this.props.renderTopView()}
-          </View>
-          <QRScannerView
-            maskColor={this.props.maskColor}
-            cornerColor={this.props.cornerColor}
-            borderColor={this.props.borderColor}
-            rectHeight={this.props.rectHeight}
-            rectWidth={this.props.rectWidth}
-            borderWidth={this.props.borderWidth}
-            cornerBorderWidth={this.props.cornerBorderWidth}
-            cornerBorderLength={this.props.cornerBorderLength}
-            cornerOffsetSize={this.props.cornerOffsetSize}
-            isCornerOffset={this.props.isCornerOffset}
-            bottomHeight={this.props.bottomHeight}
-            scanBarAnimateTime={this.props.scanBarAnimateTime}
-            scanBarColor={this.props.scanBarColor}
-            scanBarHeight={this.props.scanBarHeight}
-            scanBarMargin={this.props.scanBarMargin}
-            hintText={this.props.hintText}
-            hintTextStyle={this.props.hintTextStyle}
-            scanBarImage={this.props.scanBarImage}
-            hintTextPosition={this.props.hintTextPosition}
-            isShowScanBar={this.props.isShowScanBar}
-            finderX={this.props.finderX}
-            finderY={this.props.finderY}
-            returnSize={this.barCodeSize}/>
-          <View style={[styles.bottomButtonsContainer, this.props.bottomViewStyle]}>
-            {this.props.renderBottomView()}
-          </View>
-        </RNCamera>
-      </View>
+        }}>
+          <RNCamera
+              style={{
+                flex: 1
+              }}
+              captureAudio={false}
+              onBarCodeRead={this._handleBarCodeRead}
+              barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
+              flashMode={!this.props.flashMode ? RNCamera.Constants.FlashMode.off : RNCamera.Constants.FlashMode.torch}
+              zoom={this.props.zoom}>
+            <View style={[styles.topButtonsContainer, this.props.topViewStyle]}>
+              {this.props.renderTopView()}
+            </View>
+            <QRScannerView
+                maskColor={this.props.maskColor}
+                cornerColor={this.props.cornerColor}
+                borderColor={this.props.borderColor}
+                rectHeight={this.props.rectHeight}
+                rectWidth={this.props.rectWidth}
+                borderWidth={this.props.borderWidth}
+                cornerBorderWidth={this.props.cornerBorderWidth}
+                cornerBorderLength={this.props.cornerBorderLength}
+                cornerOffsetSize={this.props.cornerOffsetSize}
+                isCornerOffset={this.props.isCornerOffset}
+                bottomHeight={this.props.bottomHeight}
+                scanBarAnimateTime={this.props.scanBarAnimateTime}
+                scanBarColor={this.props.scanBarColor}
+                scanBarHeight={this.props.scanBarHeight}
+                scanBarMargin={this.props.scanBarMargin}
+                hintText={this.props.hintText}
+                hintTextStyle={this.props.hintTextStyle}
+                scanBarImage={this.props.scanBarImage}
+                hintTextPosition={this.props.hintTextPosition}
+                isShowScanBar={this.props.isShowScanBar}
+                finderX={this.props.finderX}
+                finderY={this.props.finderY}
+                returnSize={this.barCodeSize}/>
+            <View style={[styles.bottomButtonsContainer, this.props.bottomViewStyle]}>
+              {this.props.renderBottomView()}
+            </View>
+          </RNCamera>
+        </View>
     );
   }
 
   isShowCode = false;
 
-  barCodeSize = (size) => this.setState({barCodeSize:size})
+  barCodeSize = (size) => this.setState({barCodeSize: size})
 
-  returnMax= (a,b) =>  a > b ? a : b
+  returnMax = (a, b) => a > b ? a : b
 
-  returnMin= (a,b) =>  a < b ? a : b
+  returnMin = (a, b) => a < b ? a : b
 
   iosBarCode = (e) => {
     let x = Number(e.bounds.origin.x)
@@ -152,7 +143,6 @@ export default class QRScanner extends PureComponent {
     //   }
     // }
 
-     // 以下是不限制扫描区域
     if (this.props.isRepeatScan) {
       Vibration.vibrate();
       this.props.onRead(e)
@@ -168,7 +158,7 @@ export default class QRScanner extends PureComponent {
   _handleBarCodeRead = (e) => {
     switch (Platform.OS) {
       case 'ios':
-    this.iosBarCode(e);
+        this.iosBarCode(e);
         break;
       case 'android':
         this.androidBarCode(e);
