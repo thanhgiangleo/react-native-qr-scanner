@@ -1,4 +1,3 @@
-
 import groovy.json.JsonSlurper
 
 def computeVersionName() {
@@ -10,10 +9,14 @@ def computeVersionName() {
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.+'
+        classpath 'com.android.tools.build:gradle:3.5.1'
     }
 }
 
@@ -42,9 +45,13 @@ repositories {
     maven {
         url "$projectDir/../../react-native/android"
     }
+    maven {
+        url 'https://maven.google.com/'
+        name 'Google'
+    }
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:+'
-    compile 'com.google.zxing:core:3.3.2'
+    implementation 'com.facebook.react:react-native:+'
+    implementation 'com.google.zxing:core:3.3.2'
 }
